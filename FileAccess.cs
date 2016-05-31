@@ -1,139 +1,122 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace OOP_FanGuide
 {
-    class FileAccess
+    [Serializable]
+    public class FileAccess
     {
-        public const string File = @".\Data\sportsmens.txt";
         /// <summary>
-        /// Загружает магазины с файла
+        /// Класс, отвечающий за чтение и сохранение данных.
         /// </summary>
-        public static PersonList Load()
+        public FootballerList OpenF(string pathF, FootballerList listF)
         {
-            PersonList person = new PersonList();
-            try
-            {
-                using (TextReader reader =
-                new StreamReader(File, Encoding.Default))
-                {
-                    int n = int.Parse(reader.ReadLine());
-                    for (int i = 0; i < n; ++i)
-                    {
-                        string name = reader.ReadLine();
-                        string surName = reader.ReadLine();
-                        string nationality = reader.ReadLine();
-                        string age = reader.ReadLine();
-                        string height = reader.ReadLine();
-                        string width = reader.ReadLine();
-                        string careerDuration = reader.ReadLine();
+            /// <summary>
+            /// Чтение данных из файла.
+            /// </summary>
+            /// <returns> Возвращает коллекцию, которая была сохранена по заданному пути.
+            /// В случае, если прочесть невозможно, возвращает null. </returns>
 
-                        Person cache = new Person(name, surName, nationality, age, height, width, careerDuration);
-
-                        person.Add(cache);
-                    }
-                }
-            }
-            catch (Exception ex)
+            // Проверка на существование файла
+            if (File.Exists(pathF))
             {
-                throw new ApplicationException("File " +
-                File + " could not be read.", ex);
+                Stream stream = File.Open(pathF, FileMode.Open);
+                BinaryFormatter b = new BinaryFormatter();
+                listF = (FootballerList)b.Deserialize(stream);
+                stream.Close();
+                return listF;
             }
-            return person;
-        }
-        /// <summary>
-        /// Загружает данные с конкретного файла
-        /// </summary>
-        public static PersonList Load(string path)
-        {
-            PersonList person = new PersonList();
-            try
+            else
             {
-                using (TextReader reader =
-                new StreamReader(File, Encoding.Default))
-                {
-                    int n = int.Parse(reader.ReadLine());
-                    for (int i = 0; i < n; ++i)
-                    {
-                        string name = reader.ReadLine();
-                        string surName = reader.ReadLine();
-                        string nationality = reader.ReadLine();
-                        string age =reader.ReadLine();
-                        string height = reader.ReadLine();
-                        string width = reader.ReadLine();
-                        string careerDuration = reader.ReadLine();
-
-                        Person cache = new Person(name, surName, nationality, age, height, width, careerDuration);
-
-                        person.Add(cache);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("File " +
-                File + " could not be read.", ex);
-            }
-            return person;
-        }
-        /// <summary>
-        /// Сохраняет магазины
-        /// </summary>
-        public static void Save(PersonList person)
-        {
-            try
-            {
-                using (TextWriter writer = new StreamWriter(File, false, Encoding.Default))
-                {
-                    writer.WriteLine(person.Count);
-                    foreach (Person p in person)
-                    {
-                        writer.WriteLine(p.Name);
-                        writer.WriteLine(p.SurName);
-                        writer.WriteLine(p.Nationality);
-                        writer.WriteLine(p.Age);
-                        writer.WriteLine(p.Height);
-                        writer.WriteLine(p.Weight);
-                        writer.WriteLine(p.CareerDuraction);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("File "
-                + File + " could not be wrote down.", ex);
+                Stream stream = File.Create(pathF);
+                stream.Close();
+                return null;
             }
         }
-        /// <summary>
-        /// Сохраняет данные в конкретное место
-        /// </summary>
-        public static void Save(PersonList person, string path)
+
+        public TennisPlayerList OpenT(string pathT, TennisPlayerList listT)
         {
-            try
+            if (File.Exists(pathT))
             {
-                using (TextWriter writer = new StreamWriter(
-                File, false, Encoding.Default))
-                {
-                    writer.WriteLine(person.Count);
-                    foreach (Person p in person)
-                    {
-                        writer.WriteLine(p.Name);
-                        writer.WriteLine(p.SurName);
-                        writer.WriteLine(p.Nationality);
-                        writer.WriteLine(p.Age);
-                        writer.WriteLine(p.Height);
-                        writer.WriteLine(p.Weight);
-                        writer.WriteLine(p.CareerDuraction);
-                    }
-                }
+                Stream stream = File.Open(pathT, FileMode.Open);
+                BinaryFormatter b = new BinaryFormatter();
+                listT = (TennisPlayerList)b.Deserialize(stream);
+                stream.Close();
+                return listT; 
             }
-            catch (Exception ex)
+            else
             {
-                throw new ApplicationException("File " + path + " could not be wrote down.", ex);
+                Stream stream = File.Create(pathT);
+                stream.Close();
+                return null;
+            }
+        }
+
+        public BoxerList OpenB(string pathB, BoxerList listB)
+        {
+            if (File.Exists(pathB))
+            {
+                Stream stream = File.Open(pathB, FileMode.Open);
+                BinaryFormatter b = new BinaryFormatter();
+                listB = (BoxerList)b.Deserialize(stream);
+                stream.Close();
+                return listB;
+            }
+            else
+            {
+                Stream stream = File.Create(pathB);
+                stream.Close();
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Сохранение объекта.
+        /// </summary>
+
+        public void SaveF(string pathF, FootballerList listF)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+
+            if (!File.Exists(pathF))
+            {
+                Stream stream = File.Create(pathF);
+                stream.Close();
+            }
+            using (Stream stream = new FileStream(pathF, FileMode.Open, System.IO.FileAccess.Write, FileShare.None))
+            {
+                bf.Serialize(stream, listF);
+            }
+        }
+
+        public void SaveB(string pathB, BoxerList listB)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+
+            if (!File.Exists(pathB))
+            {
+                Stream stream = File.Create(pathB);
+                stream.Close();
+            }
+            using (Stream stream = new FileStream(pathB, FileMode.Open, System.IO.FileAccess.Write, FileShare.None))
+            {
+                bf.Serialize(stream, listB);
+            }
+        }
+
+        public void SaveT(string pathT, TennisPlayerList listT)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+
+            if (!File.Exists(pathT))
+            {
+                Stream stream = File.Create(pathT);
+                stream.Close();
+            }
+            using (Stream stream = new FileStream(pathT, FileMode.Open, System.IO.FileAccess.Write, FileShare.None))
+            {
+                bf.Serialize(stream, listT);
             }
         }
     }
