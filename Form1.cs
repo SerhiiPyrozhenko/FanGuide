@@ -1,156 +1,163 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using System.Windows.Forms;
-using System.IO;
 
 namespace OOP_FanGuide
 {
+    /// <summary>
+    /// Форма, отображающая список стортсменов.
+    /// </summary>
+
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// Создание экземляров листа для привязки данных.
+        /// </summary>
+        public FootballerList listF = new FootballerList();
+        public TennisPlayerList listT = new TennisPlayerList();
+        public BoxerList listB = new BoxerList();
+
+        /// <summary>
+        /// Указание пути к данным.
+        /// </summary>
+        string pathF = @"Data\Football.bin";
+        string pathB = @"Data\Boxing.bin";
+        string pathT = @"Data\Tennis.bin";
+        FileAccess fa = new FileAccess();
 
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void label21_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label22_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox17_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
+        }    
         
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            dataGridView2.Rows.Clear();
-        }
-
         private void btnDelAllocated_Click(object sender, EventArgs e)
         {
-            int ind = dataGridView2.SelectedCells[0].RowIndex;
-            dataGridView2.Rows.RemoveAt(ind);
+
+            var result = MessageBox.Show("Are you sure?", "Warning",
+                          MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                int ind = dataGridView6.SelectedCells[0].RowIndex;
+                dataGridView6.Rows.RemoveAt(ind);
+            }
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnDelAllocated2_Click(object sender, EventArgs e)
         {
-            Stream stream = null;
-            if(openFileDialog1.ShowDialog() == DialogResult.OK)
+            var result = MessageBox.Show("Are you sure?", "Warning",
+                         MessageBoxButtons.YesNo,
+                         MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
             {
-                if((stream = openFileDialog1.OpenFile()) != null)
+                if (dataGridView2.SelectedRows.Count > 0)
                 {
-                    StreamReader read = new StreamReader(stream);
-                    string[] str;
-                    int num = 0;
-                    try
-                    {
-                        string[] str1 = read.ReadToEnd().Split('\n');
-                        num = str1.Count();
-                        dataGridView1.RowCount = num;
-                        for(int i = 0; i< num; i++)
-                        {
-                            str = str1[i].Split('^');
-                            for(int j = 0; j < dataGridView1.ColumnCount; j++)
-                            {
-                                try
-                                {
-                                    dataGridView1.Rows[i].Cells[j].Value = str[j];
-                                }
-                                catch(Exception ex)
-                                {
-                                    MessageBox.Show(ex.Message);
-                                }
-                            }
-                        }
-                    }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    finally
-                    {
-                        read.Close();
-                    }
+                    int ind = dataGridView2.SelectedCells[0].RowIndex;
+                    dataGridView2.Rows.RemoveAt(ind);
+                    //TennisPlayer t = dataGridView2.SelectedRows[0].DataBoundItem as TennisPlayer;
+                    //listT.Remove(t);
                 }
             }
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnDelAllocated3_Click(object sender, EventArgs e)
         {
-            Stream stream = null;
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            var result = MessageBox.Show("Are you sure?", "Warning",
+                          MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
             {
-                if ((stream = saveFileDialog1.OpenFile()) != null)
-                {
-                    StreamWriter write = new StreamWriter(stream);                 
-                    try
-                    {
-                        for(int i = 0;i < dataGridView1.RowCount - 1; i++)
-                        {
-                            for(int j = 0; j < dataGridView1.ColumnCount; j++)
-                            {
-                                write.Write(dataGridView1.Rows[i].Cells[j].Value.ToString()+"^");
-                            }
-                            write.WriteLine();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    finally
-                    {
-                        write.Close();
-                    }
-                }
+                int ind = dataGridView5.SelectedCells[0].RowIndex;
+                dataGridView5.Rows.RemoveAt(ind);
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Инициализация форм добавления
+        /// </summary>
+        private void btnFootballer_Click(object sender, EventArgs e)
         {
-            Form2 f = new Form2();
-            f.Hide();
-            f.Show();
+            Form2 f2 = new Form2();
+            f2.Owner = this;
+            f2.ShowDialog(this);
         }
 
-        private void btnBodyBuilder_Click(object sender, EventArgs e)
+        private void btnTennis_Click(object sender, EventArgs e)
         {
-            Form3 f = new Form3();
-            f.Hide();
-            f.Show();
+            Form3 f3 = new Form3();
+            f3.Owner = this;
+            f3.ShowDialog(this);
         }
 
         private void btnBoxer_Click(object sender, EventArgs e)
         {
-            Form4 f = new Form4();
-            f.Hide();
-            f.Show();
-
+            Form4 f4 = new Form4();
+            f4.Owner = this;
+            f4.ShowDialog(this);
         }
-
-        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        /// <summary>
+        /// Инициализация формы помощи
+        /// </summary>
+        private void sToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Help f5 = new Help();
+            f5.Owner = this;
+            f5.ShowDialog(this);
         }
+
+
+        /// <summary>
+        /// Считывание и привязка данных при загрузке формы
+        /// </summary>
+        private void Form1_Load(object sender, EventArgs e)
+        {      
+            listF = fa.OpenF(pathF, listF);
+            listB = fa.OpenB(pathB, listB);
+            listT = fa.OpenT(pathT, listT);
+
+            personListBindingSource.DataSource = listF;
+            personListBindingSource1.DataSource = listT;
+            personListBindingSource2.DataSource = listB;
+        }
+
+        /// <summary>
+        /// Сохранение данных при закритии формы
+        /// </summary>
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            fa.SaveF(pathF, listF);
+            fa.SaveB(pathB, listB);
+            fa.SaveT(pathT, listT);   
+        }
+
+        /// <summary>
+        /// Сохранение данных при нажатии кнопки save
+        /// </summary>
+        private void savToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fa.SaveF(pathF, listF);
+            fa.SaveB(pathB, listB);
+            fa.SaveT(pathT, listT);
+
+            MessageBox.Show("The save was success");
+        }
+        /// <summary>
+        /// Обновление таблицы после добавления нового спортсмена
+        /// </summary>
+        public void UpdateDGV()
+        {
+            personListBindingSource.ResetBindings(false);
+            personListBindingSource1.ResetBindings(false);
+            personListBindingSource2.ResetBindings(false);           
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fa.SaveF(pathF, listF);
+            fa.SaveB(pathB, listB);
+            fa.SaveT(pathT, listT);
+            Close();
+        }
+
     }
 }
+
